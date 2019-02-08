@@ -19,7 +19,7 @@
 * ======================================================================================
 */
 
-namespace Linkhub_SDK\TokenBuilder;
+namespace LinkhubSDK\TokenBuilder;
 
 class Authority
 {
