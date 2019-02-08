@@ -19,6 +19,8 @@
 * ======================================================================================
 */
 
+namespace Linkhub\Authority;
+
 class Authority
 {
 	const VERSION = '1.0';

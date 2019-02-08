@@ -2,7 +2,7 @@
     "name": "linkhub/linkhub",
     "type": "library",
     "description": "Linkhub Authority SDK for php7",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "homepage": "https://www.linkhub.co.kr/",
     "keywords": [
         "linkhub",
@@ -21,6 +21,6 @@
         "php": ">=7.0.0"
     },
     "autoload": {
-      "psr-4": {"Linkhub\\": "src/Linkhub"}
+      "psr-4": {"Linkhub\\Authority\\": "src"}
     }
 }
