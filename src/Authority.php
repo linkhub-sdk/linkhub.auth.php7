@@ -202,7 +202,7 @@ class TokenRequest
 	public $access_id;
 	public $scope;
 }
-class LinkhubException extends Exception
+class LinkhubException extends \Exception
 {
 	public function __construct($response, Exception $previous = null) {
        $Err = json_decode($response);

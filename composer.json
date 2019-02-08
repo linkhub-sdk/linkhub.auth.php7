@@ -2,7 +2,7 @@
     "name": "linkhub/linkhub",
     "type": "library",
     "description": "Linkhub Authority SDK for php7",
-    "version": "1.0.9",
+    "version": "1.0.10",
     "license": "MIT",
     "require": {
         "php": ">=7.0.0"
