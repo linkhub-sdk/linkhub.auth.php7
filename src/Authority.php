@@ -19,7 +19,7 @@
 * ======================================================================================
 */
 
-namespace LinkhubSDK\Authority;
+namespace Linkhub;
 
 class Authority
 {
