@@ -2,25 +2,14 @@
     "name": "linkhub/linkhub",
     "type": "library",
     "description": "Linkhub Authority SDK for php7",
-    "version": "1.0.6",
-    "homepage": "https://www.linkhub.co.kr/",
-    "keywords": [
-        "linkhub",
-        "popbill"
-    ],
-    "author":[
-      {
-        "name":"Linkhub Corp",
-        "email":"code@linkhub.co.kr",
-        "homepage":"https://github.com/linhkbu-sdk/",
-        "role":"Developer"
-      }
-    ],
+    "version": "1.0.7",
     "license": "MIT",
     "require": {
         "php": ">=7.0.0"
     },
     "autoload": {
-      "psr-4": {"LinkhubSDK\\TokenBuilder\\": "src/"}
+      "psr-4": {
+        "LinkhubSDK\\Authority\\": "src"
+      }
     }
 }
