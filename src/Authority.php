@@ -41,6 +41,14 @@ class Authority
 	public function gzdecode($data){
 	    return gzinflate(substr($data, 10, -8));
 	}
+
+  public fucntion getSecretKey(){
+    return $this->$__SecretKey;
+  }
+
+  public function getLinkID(){
+    return $this->$__LinkID;
+  }
 	private function executeCURL($url,$header = array(),$isPost = false, $postdata = null) {
 		if($this->__requestMode != "STREAM") {
 			$http = curl_init($url);
