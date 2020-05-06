@@ -43,12 +43,13 @@ class Authority
 	}
 
   public function getSecretKey(){
-    return $this->$__SecretKey;
+    return Authority::$singleton->__SecretKey;
   }
 
   public function getLinkID(){
-    return $this->$__LinkID;
+    return Authority::$singleton->__LinkID;
   }
+  
 	private function executeCURL($url,$header = array(),$isPost = false, $postdata = null) {
 		if($this->__requestMode != "STREAM") {
 			$http = curl_init($url);
