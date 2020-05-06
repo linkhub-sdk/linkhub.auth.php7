@@ -1,7 +1,7 @@
 {
     "name": "linkhub/linkhub",
     "description": "Linkhub Authority SDK for php7",
-    "version": "1.0.12",
+    "version": "1.0.13",
     "type": "library",
     "keywords": [
       "linkhub",

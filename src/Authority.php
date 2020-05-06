@@ -42,7 +42,7 @@ class Authority
 	    return gzinflate(substr($data, 10, -8));
 	}
 
-  public fucntion getSecretKey(){
+  public function getSecretKey(){
     return $this->$__SecretKey;
   }
 
