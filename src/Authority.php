@@ -12,6 +12,7 @@
 * Author : Jeong Yohan (code@linkhub.co.kr)
 * Contributor :
 * Written : 2019-02-08
+* Updated : 2020-10-15
 *
 * Thanks for your interest.
 * We welcome any suggestions, feedbacks, blames or anythings.
@@ -25,11 +26,11 @@ class Authority
 {
 	const VERSION = '1.0';
 	const ServiceURL = 'https://auth.linkhub.co.kr';
-  const ServiceURL_GA = 'https://ga-auth.linkhub.co.kr';
+	const ServiceURL_GA = 'https://ga-auth.linkhub.co.kr';
 
 	private $__LinkID;
 	private $__SecretKey;
-  private $__requestMode = LINKHUB_COMM_MODE;
+	private $__requestMode = LINKHUB_COMM_MODE;
 	private static $singleton = null;
 	public static function getInstance($LinkID,$secretKey)
 	{
@@ -41,16 +42,16 @@ class Authority
 		return Authority::$singleton;
 	}
 	public function gzdecode($data){
-	    return gzinflate(substr($data, 10, -8));
+		return gzinflate(substr($data, 10, -8));
 	}
 
-  public function getSecretKey(){
-    return Authority::$singleton->__SecretKey;
-  }
+	public function getSecretKey(){
+		return Authority::$singleton->__SecretKey;
+	}
 
-  public function getLinkID(){
-    return Authority::$singleton->__LinkID;
-  }
+	public function getLinkID(){
+		return Authority::$singleton->__LinkID;
+	}
 
 	private function executeCURL($url,$header = array(),$isPost = false, $postdata = null) {
 		if($this->__requestMode != "STREAM") {
@@ -107,8 +108,15 @@ class Authority
 			return json_decode($response);
 		}
 	}
-	public function getTime($useStaticIP = false)
+	public function getTime($useStaticIP = false, $useLocalTimeYN = true)
 	{
+		if(is_null($useLocalTimeYN) || $useLocalTimeYN) {
+			date_default_timezone_set('UTC');
+
+			$replace_search = array("@","#");
+			$replace_target = array("T","Z");
+			return str_replace($replace_search, $replace_target, date('Y-m-d@H:i:s#'));
+		}
 		if($this->__requestMode != "STREAM") {
 			$http = curl_init(( $useStaticIP ?  Authority::ServiceURL_GA : Authority::ServiceURL ).'/Time');
 			curl_setopt($http, CURLOPT_RETURNTRANSFER, TRUE);
@@ -145,9 +153,9 @@ class Authority
 			return $response;
 		}
 	}
-	public function getToken($ServiceID, $access_id, array $scope = array() , $forwardIP = null, $useStaticIP = false)
+	public function getToken($ServiceID, $access_id, array $scope = array() , $forwardIP = null, $useStaticIP = false, $useLocalTimeYN = true)
 	{
-		$xDate = $this->getTime($useStaticIP);
+		$xDate = $this->getTime($useStaticIP, $useLocalTimeYN);
 		$uri = '/' . $ServiceID . '/Token';
 		$header = array();
 		$TokenRequest = new TokenRequest();
