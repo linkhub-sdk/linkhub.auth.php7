@@ -24,7 +24,7 @@ namespace Linkhub;
 
 class Authority
 {
-    const VERSION = '1.0';
+    const VERSION = '2.0';
     const ServiceURL = 'https://auth.linkhub.co.kr';
     const ServiceURL_GA = 'https://ga-auth.linkhub.co.kr';
 
@@ -163,14 +163,14 @@ class Authority
         $TokenRequest->scope = $scope;
         $postdata = json_encode($TokenRequest);
         $digestTarget = 'POST'.chr(10);
-        $digestTarget = $digestTarget.base64_encode(md5($postdata,true)).chr(10);
+        $digestTarget = $digestTarget.base64_encode(hash('sha256',$postdata,true)).chr(10);
         $digestTarget = $digestTarget.$xDate.chr(10);
         if(!(is_null($forwardIP) || $forwardIP == '')) {
             $digestTarget = $digestTarget.$forwardIP.chr(10);
         }
         $digestTarget = $digestTarget.Authority::VERSION.chr(10);
         $digestTarget = $digestTarget.$uri;
-        $digest = base64_encode(hash_hmac('sha1',$digestTarget,base64_decode(strtr($this->__SecretKey, '-_', '+/')),true));
+        $digest = base64_encode(hash_hmac('sha256',$digestTarget,base64_decode(strtr($this->__SecretKey, '-_', '+/')),true));
         $header[] = 'x-lh-date: '.$xDate;
         $header[] = 'x-lh-version: '.Authority::VERSION;
         if(!(is_null($forwardIP) || $forwardIP == '')) {
