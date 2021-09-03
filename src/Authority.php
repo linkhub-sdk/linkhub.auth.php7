@@ -26,6 +26,7 @@ class Authority
 {
     const VERSION = '2.0';
     const ServiceURL = 'https://auth.linkhub.co.kr';
+    const ServiceURL_Static = 'https://static-auth.linkhub.co.kr';
     const ServiceURL_GA = 'https://ga-auth.linkhub.co.kr';
 
     private $__LinkID;
@@ -108,7 +109,7 @@ class Authority
             return json_decode($response);
         }
     }
-    public function getTime($useStaticIP = false, $useLocalTimeYN = true)
+    public function getTime($useStaticIP = false, $useLocalTimeYN = true, $useGAIP = false)
     {
         if(is_null($useLocalTimeYN) || $useLocalTimeYN) {
             date_default_timezone_set('UTC');
@@ -118,7 +119,15 @@ class Authority
             return str_replace($replace_search, $replace_target, date('Y-m-d@H:i:s#'));
         }
         if($this->__requestMode != "STREAM") {
-            $http = curl_init(( $useStaticIP ?  Authority::ServiceURL_GA : Authority::ServiceURL ).'/Time');
+            if($useGAIP){
+                $targetURL = Authority::ServiceURL_GA;
+            } else if($useStaticIP){
+                $targetURL = Authority::ServiceURL_Static;
+            } else {
+                $targetURL = Authority::ServiceURL;
+            }
+
+            $http = curl_init($targetURL.'/Time');
             curl_setopt($http, CURLOPT_RETURNTRANSFER, TRUE);
             $response = curl_exec($http);
             $http_status = curl_getinfo($http, CURLINFO_HTTP_CODE);
@@ -146,16 +155,25 @@ class Authority
                 $params['http']['header'] = substr($head,0,-2);
             }
             $ctx = stream_context_create($params);
-            $response = (file_get_contents(( $useStaticIP ?  Authority::ServiceURL_GA : Authority::ServiceURL ).'/Time', false, $ctx));
+
+            if($useGAIP){
+                $targetURL = Authority::ServiceURL_GA;
+            } else if($useStaticIP){
+                $targetURL = Authority::ServiceURL_Static;
+            } else {
+                $targetURL = Authority::ServiceURL;
+            }
+
+            $response = (file_get_contents($targetURL.'/Time', false, $ctx));
             if ($http_response_header[0] != "HTTP/1.1 200 OK") {
                 throw new LinkhubException($response);
             }
             return $response;
         }
     }
-    public function getToken($ServiceID, $access_id, array $scope = array() , $forwardIP = null, $useStaticIP = false, $useLocalTimeYN = true)
+    public function getToken($ServiceID, $access_id, array $scope = array() , $forwardIP = null, $useStaticIP = false, $useLocalTimeYN = true, $useGAIP = false)
     {
-        $xDate = $this->getTime($useStaticIP, $useLocalTimeYN);
+        $xDate = $this->getTime($useStaticIP, $useLocalTimeYN, $useGAIP);
         $uri = '/' . $ServiceID . '/Token';
         $header = array();
         $TokenRequest = new TokenRequest();
@@ -180,39 +198,69 @@ class Authority
         $header[] = 'Accept-Encoding: gzip,deflate';
         $header[] = 'Content-Type: Application/json';
         $header[] = 'Connection: close';
-        return $this->executeCURL(( $useStaticIP ?  Authority::ServiceURL_GA : Authority::ServiceURL ).$uri , $header,true,$postdata);
+
+        if($useGAIP){
+            $targetURL = Authority::ServiceURL_GA;
+        } else if($useStaticIP){
+            $targetURL = Authority::ServiceURL_Static;
+        } else {
+            $targetURL = Authority::ServiceURL;
+        }
+
+        return $this->executeCURL($targetURL.$uri , $header,true,$postdata);
     }
-    public function getBalance($bearerToken, $ServiceID, $useStaticIP = false)
+    public function getBalance($bearerToken, $ServiceID, $useStaticIP = false, $useGAIP = false)
     {
         $header = array();
         $header[] = 'Authorization: Bearer '.$bearerToken;
         $header[] = 'Accept-Encoding: gzip,deflate';
         $header[] = 'Connection: close';
         $uri = '/'.$ServiceID.'/Point';
-        $response = $this->executeCURL(( $useStaticIP ?  Authority::ServiceURL_GA : Authority::ServiceURL ) . $uri,$header);
+        if($useGAIP){
+            $targetURL = Authority::ServiceURL_GA;
+        } else if($useStaticIP){
+            $targetURL = Authority::ServiceURL_Static;
+        } else {
+            $targetURL = Authority::ServiceURL;
+        }
+        $response = $this->executeCURL($targetURL.$uri, $header);
         return $response->remainPoint;
     }
-    public function getPartnerBalance($bearerToken, $ServiceID, $useStaticIP = false)
+    public function getPartnerBalance($bearerToken, $ServiceID, $useStaticIP = false, $useGAIP = false)
     {
         $header = array();
         $header[] = 'Authorization: Bearer '.$bearerToken;
         $header[] = 'Accept-Encoding: gzip,deflate';
         $header[] = 'Connection: close';
         $uri = '/'.$ServiceID.'/PartnerPoint';
-        $response = $this->executeCURL(( $useStaticIP ?  Authority::ServiceURL_GA : Authority::ServiceURL ) . $uri,$header);
+        if($useGAIP){
+            $targetURL = Authority::ServiceURL_GA;
+        } else if($useStaticIP){
+            $targetURL = Authority::ServiceURL_Static;
+        } else {
+            $targetURL = Authority::ServiceURL;
+        }
+        $response = $this->executeCURL($targetURL.$uri, $header);
         return $response->remainPoint;
     }
     /*
     * 파트너 포인트 충전 팝업 URL 추가 (2017/08/29)
     */
-    public function getPartnerURL($bearerToken, $ServiceID, $TOGO, $useStaticIP = false)
+    public function getPartnerURL($bearerToken, $ServiceID, $TOGO, $useStaticIP = false, $useGAIP = false)
     {
         $header = array();
         $header[] = 'Authorization: Bearer '.$bearerToken;
         $header[] = 'Accept-Encoding: gzip,deflate';
         $header[] = 'Connection: close';
         $uri = '/'.$ServiceID.'/URL?TG='.$TOGO;
-        $response = $this->executeCURL(( $useStaticIP ?  Authority::ServiceURL_GA : Authority::ServiceURL ) . $uri, $header);
+        if($useGAIP){
+            $targetURL = Authority::ServiceURL_GA;
+        } else if($useStaticIP){
+            $targetURL = Authority::ServiceURL_Static;
+        } else {
+            $targetURL = Authority::ServiceURL;
+        }
+        $response = $this->executeCURL($targetURL.$uri, $header);
         return $response->url;
     }
 }
