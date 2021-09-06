@@ -66,9 +66,9 @@ class Authority
             curl_setopt($http, CURLOPT_ENCODING, 'gzip,deflate');
             $responseJson = curl_exec($http);
             $http_status = curl_getinfo($http, CURLINFO_HTTP_CODE);
-      if ($responseJson != true){
-        throw new LinkhubException(curl_error($http));
-      }
+            if ($responseJson != true){
+                throw new LinkhubException(curl_error($http));
+            }
             curl_close($http);
             if($http_status != 200) {
                 throw new LinkhubException($responseJson);
@@ -119,13 +119,8 @@ class Authority
             return str_replace($replace_search, $replace_target, date('Y-m-d@H:i:s#'));
         }
         if($this->__requestMode != "STREAM") {
-            if($useGAIP){
-                $targetURL = Authority::ServiceURL_GA;
-            } else if($useStaticIP){
-                $targetURL = Authority::ServiceURL_Static;
-            } else {
-                $targetURL = Authority::ServiceURL;
-            }
+
+            $targetURL = $this->getTargetURL($useStaticIP, $useGAIP);
 
             $http = curl_init($targetURL.'/Time');
             curl_setopt($http, CURLOPT_RETURNTRANSFER, TRUE);
@@ -156,13 +151,7 @@ class Authority
             }
             $ctx = stream_context_create($params);
 
-            if($useGAIP){
-                $targetURL = Authority::ServiceURL_GA;
-            } else if($useStaticIP){
-                $targetURL = Authority::ServiceURL_Static;
-            } else {
-                $targetURL = Authority::ServiceURL;
-            }
+            $targetURL = $this->getTargetURL($useStaticIP, $useGAIP);
 
             $response = (file_get_contents($targetURL.'/Time', false, $ctx));
             if ($http_response_header[0] != "HTTP/1.1 200 OK") {
@@ -199,13 +188,7 @@ class Authority
         $header[] = 'Content-Type: Application/json';
         $header[] = 'Connection: close';
 
-        if($useGAIP){
-            $targetURL = Authority::ServiceURL_GA;
-        } else if($useStaticIP){
-            $targetURL = Authority::ServiceURL_Static;
-        } else {
-            $targetURL = Authority::ServiceURL;
-        }
+        $targetURL = $this->getTargetURL($useStaticIP, $useGAIP);
 
         return $this->executeCURL($targetURL.$uri , $header,true,$postdata);
     }
@@ -215,14 +198,10 @@ class Authority
         $header[] = 'Authorization: Bearer '.$bearerToken;
         $header[] = 'Accept-Encoding: gzip,deflate';
         $header[] = 'Connection: close';
+
+        $targetURL = $this->getTargetURL($useStaticIP, $useGAIP);
         $uri = '/'.$ServiceID.'/Point';
-        if($useGAIP){
-            $targetURL = Authority::ServiceURL_GA;
-        } else if($useStaticIP){
-            $targetURL = Authority::ServiceURL_Static;
-        } else {
-            $targetURL = Authority::ServiceURL;
-        }
+
         $response = $this->executeCURL($targetURL.$uri, $header);
         return $response->remainPoint;
     }
@@ -232,14 +211,10 @@ class Authority
         $header[] = 'Authorization: Bearer '.$bearerToken;
         $header[] = 'Accept-Encoding: gzip,deflate';
         $header[] = 'Connection: close';
+
+        $targetURL = $this->getTargetURL($useStaticIP, $useGAIP);
         $uri = '/'.$ServiceID.'/PartnerPoint';
-        if($useGAIP){
-            $targetURL = Authority::ServiceURL_GA;
-        } else if($useStaticIP){
-            $targetURL = Authority::ServiceURL_Static;
-        } else {
-            $targetURL = Authority::ServiceURL;
-        }
+
         $response = $this->executeCURL($targetURL.$uri, $header);
         return $response->remainPoint;
     }
@@ -252,16 +227,23 @@ class Authority
         $header[] = 'Authorization: Bearer '.$bearerToken;
         $header[] = 'Accept-Encoding: gzip,deflate';
         $header[] = 'Connection: close';
+
+        $targetURL = $this->getTargetURL($useStaticIP, $useGAIP);
         $uri = '/'.$ServiceID.'/URL?TG='.$TOGO;
-        if($useGAIP){
-            $targetURL = Authority::ServiceURL_GA;
-        } else if($useStaticIP){
-            $targetURL = Authority::ServiceURL_Static;
-        } else {
-            $targetURL = Authority::ServiceURL;
-        }
+
         $response = $this->executeCURL($targetURL.$uri, $header);
         return $response->url;
+    }
+
+    private function getTargetURL($useStaticIP, $useGAIP)
+    {
+        if($useGAIP){
+            return Authority::ServiceURL_GA;
+        } else if($useStaticIP){
+            return Authority::ServiceURL_Static;
+        } else {
+            return Authority::ServiceURL;
+        }
     }
 }
 class TokenRequest
