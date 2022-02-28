@@ -112,11 +112,12 @@ class Authority
     public function getTime($useStaticIP = false, $useLocalTimeYN = true, $useGAIP = false)
     {
         if(is_null($useLocalTimeYN) || $useLocalTimeYN) {
-            date_default_timezone_set('UTC');
-
             $replace_search = array("@","#");
             $replace_target = array("T","Z");
-            return str_replace($replace_search, $replace_target, date('Y-m-d@H:i:s#'));
+
+            $date = new \DateTime('now', new \DateTimeZone('UTC'));
+
+            return str_replace($replace_search, $replace_target, $date->format('Y-m-d@H:i:s#'));
         }
         if($this->__requestMode != "STREAM") {
 
