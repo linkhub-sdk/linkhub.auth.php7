@@ -138,6 +138,7 @@ class Authority
         } else {
             $header = array();
             $header[] = 'Connection: close';
+            $header[] = 'User-Agent: PHP7 LINKHUB SDK';
             $params = array('http' => array(
                  'ignore_errors' => TRUE,
                  'protocol_version' => '1.0',
@@ -188,6 +189,8 @@ class Authority
         $header[] = 'Accept-Encoding: gzip,deflate';
         $header[] = 'Content-Type: Application/json';
         $header[] = 'Connection: close';
+        $header[] = 'User-Agent: PHP7 LINKHUB SDK';
+        
 
         $targetURL = $this->getTargetURL($useStaticIP, $useGAIP);
 
@@ -199,6 +202,7 @@ class Authority
         $header[] = 'Authorization: Bearer '.$bearerToken;
         $header[] = 'Accept-Encoding: gzip,deflate';
         $header[] = 'Connection: close';
+        $header[] = 'User-Agent: PHP7 LINKHUB SDK';
 
         $targetURL = $this->getTargetURL($useStaticIP, $useGAIP);
         $uri = '/'.$ServiceID.'/Point';
@@ -212,6 +216,7 @@ class Authority
         $header[] = 'Authorization: Bearer '.$bearerToken;
         $header[] = 'Accept-Encoding: gzip,deflate';
         $header[] = 'Connection: close';
+        $header[] = 'User-Agent: PHP7 LINKHUB SDK';
 
         $targetURL = $this->getTargetURL($useStaticIP, $useGAIP);
         $uri = '/'.$ServiceID.'/PartnerPoint';
@@ -228,6 +233,7 @@ class Authority
         $header[] = 'Authorization: Bearer '.$bearerToken;
         $header[] = 'Accept-Encoding: gzip,deflate';
         $header[] = 'Connection: close';
+        $header[] = 'User-Agent: PHP7 LINKHUB SDK';
 
         $targetURL = $this->getTargetURL($useStaticIP, $useGAIP);
         $uri = '/'.$ServiceID.'/URL?TG='.$TOGO;
