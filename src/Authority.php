@@ -12,7 +12,7 @@
 * Author : Jeong Yohan (code@linkhubcorp.com)
 * Contributor :
 * Written : 2019-02-08
-* Updated : 2021-07-05
+* Updated : 2023-02-08
 *
 * Thanks for your interest.
 * We welcome any suggestions, feedbacks, blames or anythings.
@@ -55,13 +55,18 @@ class Authority
     }
 
     private function executeCURL($url,$header = array(),$isPost = false, $postdata = null) {
+        $base_header = array();
+        $base_header[] = 'User-Agent: PHP7 LINKHUB SDK';
+        $base_header[] = 'Accept-Encoding: gzip,deflate';
+        $arr_header = $header + $base_header;
+
         if($this->__requestMode != "STREAM") {
             $http = curl_init($url);
             if($isPost) {
                 curl_setopt($http, CURLOPT_POST,1);
                 curl_setopt($http, CURLOPT_POSTFIELDS, $postdata);
             }
-            curl_setopt($http, CURLOPT_HTTPHEADER,$header);
+            curl_setopt($http, CURLOPT_HTTPHEADER,$arr_header);
             curl_setopt($http, CURLOPT_RETURNTRANSFER, TRUE);
             curl_setopt($http, CURLOPT_ENCODING, 'gzip,deflate');
             $responseJson = curl_exec($http);
@@ -90,9 +95,9 @@ class Authority
                      'protocol_version' => '1.0',
                     ));
             }
-            if ($header !== null) {
+            if ($arr_header !== null) {
                 $head = "";
-                foreach($header as $h) {
+                foreach($arr_header as $h) {
                     $head = $head . $h . "\r\n";
                 }
                 $params['http']['header'] = substr($head,0,-2);
@@ -138,7 +143,6 @@ class Authority
         } else {
             $header = array();
             $header[] = 'Connection: close';
-            $header[] = 'User-Agent: PHP7 LINKHUB SDK';
             $params = array('http' => array(
                  'ignore_errors' => TRUE,
                  'protocol_version' => '1.0',
@@ -186,10 +190,8 @@ class Authority
             $header[] = 'x-lh-forwarded: '.$forwardIP;
         }
         $header[] = 'Authorization: LINKHUB '.$this->__LinkID.' '.$digest;
-        $header[] = 'Accept-Encoding: gzip,deflate';
         $header[] = 'Content-Type: Application/json';
         $header[] = 'Connection: close';
-        $header[] = 'User-Agent: PHP7 LINKHUB SDK';
         
 
         $targetURL = $this->getTargetURL($useStaticIP, $useGAIP);
@@ -200,9 +202,7 @@ class Authority
     {
         $header = array();
         $header[] = 'Authorization: Bearer '.$bearerToken;
-        $header[] = 'Accept-Encoding: gzip,deflate';
         $header[] = 'Connection: close';
-        $header[] = 'User-Agent: PHP7 LINKHUB SDK';
 
         $targetURL = $this->getTargetURL($useStaticIP, $useGAIP);
         $uri = '/'.$ServiceID.'/Point';
@@ -214,9 +214,7 @@ class Authority
     {
         $header = array();
         $header[] = 'Authorization: Bearer '.$bearerToken;
-        $header[] = 'Accept-Encoding: gzip,deflate';
         $header[] = 'Connection: close';
-        $header[] = 'User-Agent: PHP7 LINKHUB SDK';
 
         $targetURL = $this->getTargetURL($useStaticIP, $useGAIP);
         $uri = '/'.$ServiceID.'/PartnerPoint';
@@ -231,9 +229,7 @@ class Authority
     {
         $header = array();
         $header[] = 'Authorization: Bearer '.$bearerToken;
-        $header[] = 'Accept-Encoding: gzip,deflate';
         $header[] = 'Connection: close';
-        $header[] = 'User-Agent: PHP7 LINKHUB SDK';
 
         $targetURL = $this->getTargetURL($useStaticIP, $useGAIP);
         $uri = '/'.$ServiceID.'/URL?TG='.$TOGO;
