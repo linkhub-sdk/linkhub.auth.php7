@@ -10,13 +10,15 @@
 *
 * http://www.linkhub.co.kr
 * Author : Jeong Yohan (code@linkhubcorp.com)
-* Contributor :
+* Contributor : Jeong Wooseok (code@linkhubcorp.com)
 * Written : 2019-02-08
-* Updated : 2023-02-08
+* Updated : 2023-08-02
 *
 * Thanks for your interest.
 * We welcome any suggestions, feedbacks, blames or anythings.
 *
+* Update Log
+* - 2023/08/02 AuthURL Setter added
 * ======================================================================================
 */
 
@@ -28,7 +30,7 @@ class Authority
     const ServiceURL = 'https://auth.linkhub.co.kr';
     const ServiceURL_Static = 'https://static-auth.linkhub.co.kr';
     const ServiceURL_GA = 'https://ga-auth.linkhub.co.kr';
-
+    private $ServiceURL;
     private $__LinkID;
     private $__SecretKey;
     private $__requestMode = LINKHUB_COMM_MODE;
@@ -52,6 +54,9 @@ class Authority
 
     public function getLinkID(){
         return Authority::$singleton->__LinkID;
+    }
+    public function ServiceURL($V){
+        $this->ServiceURL = $V;
     }
 
     private function executeCURL($url,$header = array(),$isPost = false, $postdata = null) {
@@ -240,6 +245,10 @@ class Authority
 
     private function getTargetURL($useStaticIP, $useGAIP)
     {
+        if(isset($this->ServiceURL)) {
+            return $this->ServiceURL;
+        }
+
         if($useGAIP){
             return Authority::ServiceURL_GA;
         } else if($useStaticIP){
