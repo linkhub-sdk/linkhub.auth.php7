@@ -12,13 +12,14 @@
 * Author : Jeong Yohan (code@linkhubcorp.com)
 * Contributor : Jeong Wooseok (code@linkhubcorp.com)
 * Written : 2019-02-08
-* Updated : 2023-08-02
+* Updated : 2023-08-11
 *
 * Thanks for your interest.
 * We welcome any suggestions, feedbacks, blames or anythings.
 *
 * Update Log
 * - 2023/08/02 AuthURL Setter added
+* - 2023/08/11 ServiceURL rename
 * ======================================================================================
 */
 
@@ -30,10 +31,11 @@ class Authority
     const ServiceURL = 'https://auth.linkhub.co.kr';
     const ServiceURL_Static = 'https://static-auth.linkhub.co.kr';
     const ServiceURL_GA = 'https://ga-auth.linkhub.co.kr';
-    private $ServiceURL;
+
     private $__LinkID;
     private $__SecretKey;
     private $__requestMode = LINKHUB_COMM_MODE;
+    private $__ServiceURL;
     private static $singleton = null;
     public static function getInstance($LinkID,$secretKey)
     {
@@ -56,7 +58,7 @@ class Authority
         return Authority::$singleton->__LinkID;
     }
     public function ServiceURL($V){
-        $this->ServiceURL = $V;
+        $this->__ServiceURL = $V;
     }
 
     private function executeCURL($url,$header = array(),$isPost = false, $postdata = null) {
@@ -245,8 +247,8 @@ class Authority
 
     private function getTargetURL($useStaticIP, $useGAIP)
     {
-        if(isset($this->ServiceURL)) {
-            return $this->ServiceURL;
+        if(isset($this->__ServiceURL)) {
+            return $this->__ServiceURL;
         }
 
         if($useGAIP){
