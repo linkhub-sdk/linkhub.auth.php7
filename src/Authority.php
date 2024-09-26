@@ -12,7 +12,7 @@
 * Author : Jeong Yohan (code@linkhubcorp.com)
 * Contributor : Jeong Wooseok (code@linkhubcorp.com)
 * Written : 2019-02-08
-* Updated : 2023-08-11
+* Updated : 2024-09-26
 *
 * Thanks for your interest.
 * We welcome any suggestions, feedbacks, blames or anythings.
@@ -20,6 +20,7 @@
 * Update Log
 * - 2023/08/02 AuthURL Setter added
 * - 2023/08/11 ServiceURL rename
+* - 2024/09/26 Timeout added
 * ======================================================================================
 */
 
@@ -76,6 +77,10 @@ class Authority
             curl_setopt($http, CURLOPT_HTTPHEADER,$arr_header);
             curl_setopt($http, CURLOPT_RETURNTRANSFER, TRUE);
             curl_setopt($http, CURLOPT_ENCODING, 'gzip,deflate');
+            // Read timeout 설정 
+            curl_setopt($http, CURLOPT_TIMEOUT_MS, 180 * 1000);
+            // Connection timeout 설정
+            curl_setopt($http, CURLOPT_CONNECTTIMEOUT_MS, 10 * 1000);
             $responseJson = curl_exec($http);
             $http_status = curl_getinfo($http, CURLINFO_HTTP_CODE);
             if ($responseJson != true){
@@ -93,13 +98,15 @@ class Authority
                      'ignore_errors' => TRUE,
                      'method' => 'POST',
                      'protocol_version' => '1.0',
-                     'content' => $postdata
+                     'content' => $postdata,
+                     'timeout' => 10
                     ));
             } else {
             $params = array('http' => array(
                      'ignore_errors' => TRUE,
                      'method' => 'GET',
                      'protocol_version' => '1.0',
+                     'timeout' => 10
                     ));
             }
             if ($arr_header !== null) {
@@ -137,6 +144,10 @@ class Authority
 
             $http = curl_init($targetURL.'/Time');
             curl_setopt($http, CURLOPT_RETURNTRANSFER, TRUE);
+            // Read timeout 설정 
+            curl_setopt($http, CURLOPT_TIMEOUT_MS, 180 * 1000);
+            // Connection timeout 설정
+            curl_setopt($http, CURLOPT_CONNECTTIMEOUT_MS, 10 * 1000);
             $response = curl_exec($http);
             $http_status = curl_getinfo($http, CURLINFO_HTTP_CODE);
             if ($response != true){
@@ -153,7 +164,8 @@ class Authority
             $params = array('http' => array(
                  'ignore_errors' => TRUE,
                  'protocol_version' => '1.0',
-                 'method' => 'GET'
+                 'method' => 'GET',
+                 'timeout' => 10
             ));
             if ($header !== null) {
                 $head = "";
